@@ -1,0 +1,19 @@
+# 忽略特定目录中的文件
+dataset/hermiston/*
+dataset/hermiston.mat
+model/hermiston/*
+model/zy3/*
+model/lasvegas/*
+dataset/*
+result
+__pycache__
+.idea
+dataset
+dataset.zip
+.temp
+resnet_zy3_teacher_model.pth
+SimKD
+SemCKD
+SRRL
+DKD
+EMCNet
