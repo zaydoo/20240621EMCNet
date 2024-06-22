@@ -21,7 +21,7 @@ print(f"using {device} device")
 print("--------------------------------")
 
 # 超参数设置
-dataset = 'zy3' # 'hermiston' / 'yancheng' / 'bayarea'
+dataset = 'bayarea' # 'hermiston' / 'yancheng' / 'bayarea'
 data_path = os.path.join('dataset', dataset) # save data
 model_name = 'resnet' # 'resnet', 'vgg'
 epochs = 100
@@ -37,7 +37,7 @@ milestones = [40, 70, 90] # learning rate decay 10 times at the epoch in the lis
 pca = True # whether to use pca when create the samples (memory limit)
 numComponents = 64 # pca dimensions
 #model/hermiston/resnet/model.pth
-save_teacher_path = "model/zy3/{}/model.pth".format(model_name) # save model weights
+save_teacher_path = "model/{}/{}/model.pth".format(dataset,model_name) # save model weights
 #result/hermiston/resnet/student
 result_path = ".temp/" # save result
 #model/hermiston/student
@@ -70,13 +70,13 @@ else:
         model_stu = StudentVGGNet(bands=bands, mode=KD_mode).to(device)
         model_tea = VGGNet(bands=bands, mode=KD_mode).to(device)
 
-student = "shufflenet"
-if student == "shufflenet": #size = 1 for hermiston IN_CHAN = 3 FOR HERMISTON
-    model_stu = shufflenetv2(bands=3, num_class=2, mode='KD', ret='single', srrl=False).to(device)
-    model_tea = ResNet50(bands=3, mode=KD_mode).to(device)
-if student == "mobilenet":
-    model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single').to(device)
-    model_tea = VGGNet(bands=64, mode=KD_mode).to(device)
+# student = "shufflenet"
+# if student == "shufflenet": #size = 1 for hermiston IN_CHAN = 3 FOR HERMISTON
+#     model_stu = shufflenetv2(bands=3, num_class=2, mode='KD', ret='single', srrl=False).to(device)
+#     model_tea = ResNet50(bands=3, mode=KD_mode).to(device)
+# if student == "mobilenet":
+#     model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single').to(device)
+#     model_tea = VGGNet(bands=64, mode=KD_mode).to(device)
 model_tea.load_state_dict(torch.load(save_teacher_path))
 # model_stu.load_state_dict(torch.load("DKD/model/zy3/resnet/student/model_epoch_37_oa_0.9161712665317824_kappa_0.5576497508893845.pth"))
 # =================================================================测试部分！

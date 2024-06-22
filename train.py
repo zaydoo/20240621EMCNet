@@ -75,8 +75,8 @@ def train_student_igkd(dataloader, model_tea, model_stu, loss_fn, optimizer, dev
             #print(fea_stu.shape) #([128, 256, 7, 7])
             #import time
             #time.sleep(1000)
-            loss_low_rank = 0
-            #loss_low_rank = loss_lr(fea_tea, fea_stu)
+            #loss_low_rank = 0
+            loss_low_rank = loss_lr(fea_tea, fea_stu)
 
         # loss computed by soft labels
         soft_logits_tea = Softmax()(pred_tea * 1.0/temp)
@@ -101,18 +101,18 @@ def train_student_igkd(dataloader, model_tea, model_stu, loss_fn, optimizer, dev
         total_hard_loss = total_hard_loss + reg*loss_hard.item() / len(dataloader)
         total_soft_loss = total_soft_loss + loss_soft.item() / len(dataloader)
         if KD_mode == 'KD':
-            total_low_rank_loss = 0
-            #total_low_rank_loss = total_low_rank_loss + lr_reg*loss_low_rank.item() / len(dataloader)
+            #total_low_rank_loss = 0
+            total_low_rank_loss = total_low_rank_loss + lr_reg*loss_low_rank.item() / len(dataloader)
         total_acc = total_acc + (Softmax()(pred_stu).argmax(1) == y).type(torch.float).sum().item()
-        if batch % 100 == 0:
-            loss, current = loss.item(), batch * len(X)
-            loss_hard, loss_soft = loss_hard.item(), loss_soft.item()
-            if KD_mode == 'KD':
-                loss_low_rank = 0
-                # loss_low_rank = loss_low_rank.item()
-                print(f"total loss: {loss:>7f} hard loss: {reg*loss_hard:>7f} soft loss:  {loss_soft:>7f} low rank loss: {lr_reg*loss_low_rank:>7f} [{current:>5d}/{size:>5d}]")
-            else:
-                print(f"total loss: {loss:>7f} hard loss: {reg*loss_hard:>7f} soft loss:  {loss_soft:>7f} [{current:>5d}/{size:>5d}]")
+        # if batch % 100 == 0:
+        #     loss, current = loss.item(), batch * len(X)
+        #     loss_hard, loss_soft = loss_hard.item(), loss_soft.item()
+        #     if KD_mode == 'KD':
+        #         loss_low_rank = 0
+        #         # loss_low_rank = loss_low_rank.item()
+        #         print(f"total loss: {loss:>7f} hard loss: {reg*loss_hard:>7f} soft loss:  {loss_soft:>7f} low rank loss: {lr_reg*loss_low_rank:>7f} [{current:>5d}/{size:>5d}]")
+        #     else:
+        #         print(f"total loss: {loss:>7f} hard loss: {reg*loss_hard:>7f} soft loss:  {loss_soft:>7f} [{current:>5d}/{size:>5d}]")
     total_acc /= size
     if KD_mode == 'KD':
         print(f"Train Error: \n Accuracy: {(100*total_acc):>0.1f}%, Avg total loss: {total_loss:>8f} \n"
