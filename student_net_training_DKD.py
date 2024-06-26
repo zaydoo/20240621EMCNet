@@ -21,7 +21,7 @@ print(f"using {device} device")
 print("--------------------------------")
 
 # 超参数设置
-dataset = 'bayarea' # 'hermiston' / 'yancheng' / 'bayarea'
+dataset = 'lasvegas' # 'hermiston' / 'yancheng' / 'bayarea'
 data_path = os.path.join('dataset', dataset) # save data
 model_name = 'resnet' # 'resnet', 'vgg'
 epochs = 100
@@ -34,10 +34,10 @@ KD_mode = 'KD'
 mode = 'BCD' # 'BCD'--binary change detection mode
 learning_rate = 0.01 # initial learning rate
 milestones = [40, 70, 90] # learning rate decay 10 times at the epoch in the list
-pca = True # whether to use pca when create the samples (memory limit)
-numComponents = 64 # pca dimensions
+pca = False # whether to use pca when create the samples (memory limit)
+numComponents = 13 # pca dimensions
 #model/hermiston/resnet/model.pth
-save_teacher_path = "model/{}/{}/model.pth".format(dataset,model_name) # save model weights
+save_teacher_path = "model/{}/{}/teacher/model.pth".format(dataset,model_name) # save model weights
 #result/hermiston/resnet/student
 result_path = ".temp/" # save result
 #model/hermiston/student
@@ -64,8 +64,8 @@ if pca:
         model_tea = VGGNet(bands=numComponents, mode=KD_mode).to(device)
 else:
     if model_name == "resnet":
-        model_stu = ResNet18(bands=bands, mode=KD_mode).to(device)
-        model_tea = ResNet50(bands=bands, mode=KD_mode).to(device)
+        model_stu = ResNet18(bands=13, mode=KD_mode).to(device)
+        model_tea = ResNet50(bands=13, mode=KD_mode).to(device)
     elif model_name == "vgg":
         model_stu = StudentVGGNet(bands=bands, mode=KD_mode).to(device)
         model_tea = VGGNet(bands=bands, mode=KD_mode).to(device)

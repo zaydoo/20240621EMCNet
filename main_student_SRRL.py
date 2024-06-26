@@ -19,21 +19,21 @@ print(f"using {device} device")
 print('-------------------------------')
 
 # hyper-parameter setting
-dataset = 'hermiston' # 'hermiston' / 'yancheng' / 'bayarea'
+dataset = 'lasvegas' # 'hermiston' / 'yancheng' / 'bayarea'
 data_path = os.path.join('dataset', dataset) # save data
-model_name = 'vgg' # 'resnet', 'vgg'
+model_name = 'resnet' # 'resnet', 'vgg'
 save_teacher_path = os.path.join(os.path.join(os.path.join('model', dataset), model_name),  'model.pth') # save model weights
 result_path = os.path.join(os.path.join(os.path.join('SRRL\\result', dataset), model_name), 'student') # save result
 save_student_path = os.path.join(os.path.join(os.path.join('SRRL\\model', dataset), model_name), 'student')
 epochs = 100
-batch_size = 64
+batch_size = 256
 num_workers = 0
 shuffle = True
 KD_mode = 'KD'
 mode = 'BCD' # 'BCD'--binary change detection mode
 learning_rate = 0.01 # initial learning rate
 milestones = [40, 70, 90] # learning rate decay 10 times at the epoch in the list
-pca = True # whether to use pca when create the samples (memory limit)
+pca = False # whether to use pca when create the samples (memory limit)
 numComponents = 64 # pca dimensions
 srrl = True
 
@@ -68,13 +68,13 @@ else:
         model_tea = VGGNet(bands=bands, mode=KD_mode, srrl=srrl).to(device)
 #model_tea.load_state_dict(torch.load(save_teacher_path))
 
-student = "mobilenet"
-if student == "shufflenet":
-    model_stu = shufflenetv2(num_class=2, in_chan= 3, size = 1, srrl = True).to(device)
-    model_tea = ResNet50(bands=64, mode=KD_mode, srrl = srrl).to(device)
-if student == "mobilenet":
-    model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single', srrl=True).to(device)
-    model_tea = VGGNet(bands=64, mode=KD_mode, srrl = srrl).to(device)
+# student = "mobilenet"
+# if student == "shufflenet":
+#     model_stu = shufflenetv2(num_class=2, in_chan= 3, size = 1, srrl = True).to(device)
+#     model_tea = ResNet50(bands=64, mode=KD_mode, srrl = srrl).to(device)
+# if student == "mobilenet":
+#     model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single', srrl=True).to(device)
+#     model_tea = VGGNet(bands=64, mode=KD_mode, srrl = srrl).to(device)
 # resume training
 #model_stu.load_state_dict(torch.load("SRRL/model/hermiston/resnet/student/model_epoch_38_oa_0.9857692307692307_kappa_0.9348083891305655.pth"))
 model_tea.load_state_dict(torch.load(save_teacher_path))

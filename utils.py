@@ -37,10 +37,11 @@ def unfold(tensor, mode): # mode = [1, 2, 3]
 def load_dataset(dataset, mode='BCD'):
     print('loading {} dataset'.format(dataset))
     if dataset == "yancheng":
-        path = 'E:\\dataset\\yancheng_new.mat'
+        path = 'dataset/yancheng_new.mat'
+        data = sio.loadmat(path)
         hsi_t1 = data['hsi_t1']
         hsi_t2 = data['hsi_t2']
-        hsi_gt_b = data['hsi_gt_b']
+        hsi_gt_b = data['hsi_gt']
     elif dataset == "hermiston":
         path = 'dataset/hermiston.mat'
         data = sio.loadmat(path)
@@ -62,7 +63,7 @@ def load_dataset(dataset, mode='BCD'):
         hsi_t2 = data['msi_t2']
         hsi_gt_b = data['msi_gt_b']
     elif dataset == "lasvegas":
-        path = 'dataset/zy3_double.mat'
+        path = 'dataset/lasvegas_double.mat'
         data = sio.loadmat(path)
         hsi_t1 = data['msi_t1']
         hsi_t2 = data['msi_t2']

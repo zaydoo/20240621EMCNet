@@ -20,9 +20,9 @@ print(f"using {device} device")
 print('-------------------------------')
 
 # hyper-parameter setting
-dataset = 'hermiston' # 'hermiston' / 'yancheng' / 'bayarea'
+dataset = 'lasvegas' # 'hermiston' / 'yancheng' / 'bayarea'
 data_path = os.path.join('dataset', dataset) # save data
-model_name = 'vgg' # 'resnet', 'vgg'
+model_name = 'resnet' # 'resnet', 'vgg'
 save_teacher_path = os.path.join(os.path.join(os.path.join('model', dataset), model_name),  'model.pth') # save model weights
 result_path = os.path.join(os.path.join(os.path.join('SimKD\\result', dataset), model_name), 'student') # save result
 save_student_path = os.path.join(os.path.join(os.path.join('SimKD\\model', dataset), model_name), 'student')
@@ -34,7 +34,7 @@ KD_mode = 'KD'
 mode = 'BCD' # 'BCD'--binary change detection mode
 learning_rate = 0.01 # initial learning rate
 milestones = [40, 70, 90] # learning rate decay 10 times at the epoch in the list
-pca = True # whether to use pca when create the samples (memory limit)
+pca = False # whether to use pca when create the samples (memory limit)
 numComponents = 64 # pca dimensions
 
 print('backbone is: {}'.format(model_name))
@@ -67,19 +67,19 @@ else:
         model_stu = StudentVGGNet(bands=bands, mode=KD_mode).to(device)
         model_tea = VGGNet(bands=bands, mode=KD_mode).to(device)
 
-student = "mobilenet"
-if student == "shufflenet":
-    model_stu = shufflenetv2(num_class=2, size = 0.5).to(device)
-    model_tea = ResNet50(bands=3, mode=KD_mode).to(device)
-if student == "mobilenet":
-    model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single').to(device)
-    model_tea = VGGNet(bands=64, mode=KD_mode).to(device)
-model_tea.load_state_dict(torch.load(save_teacher_path))
+# student = "mobilenet"
+# if student == "shufflenet":
+#     model_stu = shufflenetv2(num_class=2, size = 0.5).to(device)
+#     model_tea = ResNet50(bands=3, mode=KD_mode).to(device)
+# if student == "mobilenet":
+#     model_stu = MobileNetv2(bands=64, num_class=2, mode='KD', ret='single').to(device)
+#     model_tea = VGGNet(bands=64, mode=KD_mode).to(device)
+# model_tea.load_state_dict(torch.load(save_teacher_path))
 
 if pca:
-    data = torch.randn(2, numComponents, 3, 3).type(torch.cuda.FloatTensor)
+    data = torch.randn(2, numComponents, 5, 5).type(torch.cuda.FloatTensor)
 else:
-    data = torch.randn(2, bands, 3, 3).type(torch.cuda.FloatTensor)
+    data = torch.randn(2, bands, 5, 5).type(torch.cuda.FloatTensor)
 
 model_tea.eval()
 model_stu.eval()
